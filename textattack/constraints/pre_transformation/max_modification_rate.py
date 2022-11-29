@@ -9,6 +9,17 @@ import math
 from textattack.constraints import PreTransformationConstraint
 
 
+"""
+
+Max Modification Rate
+-----------------------------
+
+"""
+import math
+
+from textattack.constraints import PreTransformationConstraint
+
+
 class MaxModificationRate(PreTransformationConstraint):
     """A constraint that prevents modifying words beyond certain percentage of
     total number of words.
@@ -22,21 +33,25 @@ class MaxModificationRate(PreTransformationConstraint):
             text length can vary a lot between samples, and a `N%` modification limit might not make sense for very short text.
     """
 
-    def __init__(self, max_rate, min_threshold=1):
+    def __init__(self, max_rate,threshold, min_threshold=1):
         assert isinstance(max_rate, float), "`max_rate` must be a float."
         assert max_rate >= 0 and max_rate <= 1, "`max_rate` must between 0 and 1."
         assert isinstance(min_threshold, int), "`min_threshold` must an int"
 
         self.max_rate = max_rate
         self.min_threshold = min_threshold
+        self.threshold = threshold
 
     def _get_modifiable_indices(self, current_text):
         """Returns the word indices in current_text which are able to be
         modified."""
+        if self.threshold:
+           threshold = self.threshold
+        else:
+          threshold = max(
+              math.ceil(curent_text.rnum_words * self.max_rate), self.min_threshold
+          )
 
-        threshold = max(
-            math.ceil(current_text.num_words * self.max_rate), self.min_threshold
-        )
         if len(current_text.attack_attrs["modified_indices"]) >= threshold:
             return set()
         else:
