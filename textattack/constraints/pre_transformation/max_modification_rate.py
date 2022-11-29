@@ -33,7 +33,7 @@ class MaxModificationRate(PreTransformationConstraint):
             text length can vary a lot between samples, and a `N%` modification limit might not make sense for very short text.
     """
 
-    def __init__(self, max_rate,threshold, min_threshold=1):
+    def __init__(self, max_rate,threshold=None, min_threshold=1):
         assert isinstance(max_rate, float), "`max_rate` must be a float."
         assert max_rate >= 0 and max_rate <= 1, "`max_rate` must between 0 and 1."
         assert isinstance(min_threshold, int), "`min_threshold` must an int"
